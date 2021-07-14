@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from django.urls.conf import path
+from django.urls.conf import path, re_path
 from . import views
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -22,13 +22,19 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
+app_name = "api"
+
 urlpatterns = [
     url(
         r"^$",
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
-    path("login/", TokenObtainPairView.as_view(), name="login"),
-    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("login/", views.LoginView.as_view(), name="login"),
+    path("logout", views.LogoutView.as_view(), name="logout"),
+    # path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("register/", views.RegisterView.as_view(), name="register"),
+    path("profile/", views.ProfileView.as_view(), name="profile"),
+    re_path("v1/version", views.version1, name="version1"),
+    re_path("v2/version", views.version2, name="version2"),
 ]

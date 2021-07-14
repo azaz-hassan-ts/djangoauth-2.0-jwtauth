@@ -2,10 +2,28 @@ from django.contrib.auth import models
 from django.contrib.auth.models import User
 from django.db.models import fields
 from django.db.models.base import Model
-from rest_framework import serializers
+from drf_yasg.openapi import Response
+from rest_framework import serializers, status
 from rest_framework.fields import CharField
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+
+class LoginSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super(LoginSerializer, self).validate(attrs)
+        data.update({"user": self.user.username})
+        data.update({"id": self.user.id})
+        return data
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    def validate(self, attrs):
+        self.token = attrs["refresh"]
+        return attrs
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -43,3 +61,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+        )
