@@ -47,14 +47,15 @@ or
 
 
 ### Got to https://restjwtauth.herokuapp.com/ to see swagger spec document
-#### Note: Session Auth is integrated in Swagger Spec document
+#### Note: JWT Bearer Auth is integrated in Swagger Spec document, Access Token expires after two minutes, Refresh token after a day
 #### API HIT CYCLE:
 
 ```
 1. Create a register from swagger link
-2. Click on login and send required username and password, it will return a cookie which swagger automatically stores in browser and a session in created
-3. Now click on profile (GET) to get information and profile (put) to change username, email, first_name and last_name
-4. Logout and it will destroy the session
+2. Click on login and send required username and password, it will return a json web token
+3. Now Go on top and click on Authorize and add token in input field "bearer <access-token>" (without quotes)
+4. Now click on profile to view profile info
+5. Logout functionality will only blacklist the refresh token but it won't do anything to access token which means you can access certain resources till the access token expires
 ```
 
 ## Documentation
